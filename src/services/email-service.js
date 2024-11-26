@@ -26,15 +26,6 @@ const fetchPendingEmails = async (timestamp) => {
     }
 }
 
-const createNotification = async (data) => {
-    try {
-        console.log(data);
-        const response = await repo.create(data);
-        return response;
-    } catch (error) {
-        console.log(error);
-    }
-}
 const updateTicket = async (ticketId, data) => {
     try {
         const response = await repo.update(ticketId, data);
@@ -45,13 +36,46 @@ const updateTicket = async (ticketId, data) => {
 }
 
 
-
-
-
-
-module.exports={
-    sendBasicEmail,
-     createNotification,
-     fetchPendingEmails,
-     updateTicket
+const createNotification = async (data) => {
+    try {
+        console.log(data);
+        const response = await repo.create(data);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
 }
+
+const subscribeEvents = async (payload) => {
+    let service = payload.service;
+    console.log(service);
+    let data = payload.data;
+    console.log(data);
+    switch(service) {
+        case 'CREATE TICKET':
+            await createNotification(data);
+            break;
+        case 'SEND BASIC MAIL':
+            await sendBasicEmail(data);
+            break;
+        default: 
+            console.log('No valid event received');
+            break;
+    }
+}
+
+module.exports = {
+    sendBasicEmail,
+    fetchPendingEmails,
+    createNotification,
+    updateTicket,
+    subscribeEvents
+}
+
+
+/**
+ * SMTP -> a@b.com
+ * receiver-> d@e.com
+ * 
+ * from: support@noti.com
+ */

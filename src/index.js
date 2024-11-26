@@ -14,14 +14,16 @@ const setupAndStartServer = async () => {
     const app = express();
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+    let date = new Date();
 
     app.post('/api/v1/tickets', TicketController.create);
 
-    // const channel = await createChannel();
-    // subscribeMessage(channel, EmailService.subscribeEvents, REMINDER_BINDING_KEY);
+    const channel = await createChannel();
+    subscribeMessage(channel, EmailService.subscribeEvents, REMINDER_BINDING_KEY);
 
     app.listen(PORT, () => {
         console.log(`Server started at port ${PORT}`);
+        console.log(date);
         // jobs();
         
     });
